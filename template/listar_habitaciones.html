@@ -1,0 +1,22 @@
+{%extends "plantilla_base.html"%}
+
+{%block title%} Inicio {%endblock%}
+{%block content%} 
+
+<table>
+    <tbody>
+    {% if registros %}
+    {% for registro in registros %}
+    <tr>
+        <td>
+            {{registro.n_habitacion}}
+        </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <h1>No se tienen registros</h1>
+    {% endif %}
+    </tbody>
+</table>
+
+{%endblock%}

@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <title> {%block title%} {%endblock%} </title>
+</head>
+<body>
+<header id="header"> <h1>Hotel Solutions</h1></header>
+<nav id="nav"> 
+    <ul>
+       
+    <li><a href="{% url 'inicio' %}">Inicio</a></li>
+          
+    <li><a href="{% url 'listarHabitaciones' %}">Mostrar Habitaciones</a></li>
+
+
+    </ul>
+
+</nav>
+<div id="content">{%block content%} {%endblock%}</div>
+<footer id="footer">
+    Creado por: Francisco José Neff Hernandez, Ingeniero en telemática. <br>
+    Contacto en <a href="https://www.linkedin.com/in/francisco-jos%C3%A9-neff-hern%C3%A1ndez/"> LinkedIn </a>
+</footer>
+
+</body>
+</html>
