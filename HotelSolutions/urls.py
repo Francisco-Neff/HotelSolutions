@@ -19,16 +19,27 @@ from django.conf.urls.static import static
 from django.conf import settings
 from Habitaciones import views as habitacion
 from Reservas import views as reserva
+from Clientes import views as cliente
 
 urlpatterns = [
-    #URLs-Habitaciones
+
     path('', habitacion.homepage , name='inicio'),
+    #URLs-Habitaciones
+    
     path('mostrarhabitaciones/', habitacion.listarHabitaciones , name='listarHabitaciones'),
+    path('crearHabitacion', habitacion.crearHabitación.as_view() ,name='crearHabitacion'),
+    path('udHabitacion/<str:servicio>', habitacion.udHabitación.as_view() ,name='udHabitacion'),
+
+    #URLs-cliente
+    path('altacliente/', cliente.altaCliente.as_view() , name='altacliente'),
+    path('modificarcliente/', cliente.modificarCliente.as_view() , name='modificarcliente'),
+
+
+    #URLs-Reservas
     path('disponibilidad',reserva.comprobarDisponibilidad.as_view(),name='disponibilidad'),
 
 
-
-
+    #admin 
     path('admin/', admin.site.urls),
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

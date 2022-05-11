@@ -1,0 +1,18 @@
+{%extends "plantilla_base.html"%}
+
+
+{%block title%} Habitacion {%endblock%}
+
+{%block content%} 
+{% if respuesta %} 
+
+<p>{{respuesta}}</p>
+
+{% else %}
+<form method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Enviar">
+    </form>
+{%endif%}
+{%endblock%}

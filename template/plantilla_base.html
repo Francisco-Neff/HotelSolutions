@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <link rel="stylesheet" href="{% static 'css/navegacion.css' %}">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/icon/favicon.ico' %}">
     <title> {%block title%} {%endblock%} </title>
     {%block head_js%} {%endblock%}
 </head>
@@ -15,9 +16,21 @@
     <ul>
        
     <li><a href="{% url 'inicio' %}">Inicio</a></li>
-          
-    <li><a href="{% url 'listarHabitaciones' %}">Mostrar Habitaciones</a></li>
+    <li><a href="">Habitaciones</a>
+    <ul>    
+        <li><a href="{% url 'crearHabitacion' %}">Nuevas Habitaciones</a></li>
+        <li><a href="{% url 'listarHabitaciones' %}">Mostrar Habitaciones</a></li>
+        <li><a href="{% url 'udHabitacion' 'modificar' %}">Modificar Habitaciones</a></li>
+        <li><a href="{% url 'udHabitacion' 'borrar' %}">Eliminar Habitaciones</a></li>
+    </ul>
+    </li>
 
+    <li><a href="">Cliente</a>
+        <ul>    
+            <li><a href="{% url 'altacliente' %}">Registrarse</a></li>
+            <li><a href="{% url 'modificarcliente' %}">Modificar datos</a></li>
+        </ul>
+    </li>
 
     </ul>
 

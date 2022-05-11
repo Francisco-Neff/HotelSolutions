@@ -1,0 +1,24 @@
+{%extends "plantilla_base.html"%}
+{%block title%} Habitacion {%endblock%}
+
+{%block content%} 
+{% if respuesta %} 
+<p>{{respuesta}}</p>
+{%endif%}
+
+<form method="POST" action="{% url 'udHabitacion' servicio %}">
+    {% csrf_token %}
+    {% if form %} 
+    <p>{{ud_id}}</p>
+        <input name="ud" type="hidden" value="{{ud_id}}"></label>
+        {{form.as_p}}
+    {%else%}
+    {% for registro in listado %}
+    <input type="radio" name="ud" value="{{registro.id_habitacion}}">
+    <label for="ud">{{registro.id_habitacion}}</label><br>
+    {% endfor %}
+    {%endif%}
+    <input type="submit" value="Enviar">
+    </form>
+
+{%endblock%}
