@@ -1,10 +1,46 @@
 {%extends "plantilla_base.html"%}
+{% load static %}
 
-{%block title%} Inicio {%endblock%}
+{%block title%} Disponibilidad {%endblock%}
+{%block head_js%}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+  <script type="text/javascript" src="{% static 'js/datapicker_es.js' %}"></script> 
+  <script>
+    $( function() {
+      $( "#id_fx_entrada" ).datepicker();
+      $( "#id_fx_salida" ).datepicker();
+    } );
+    </script>
+  {%endblock%}
 {%block content%} 
+<h1>Bienvenido a Hotel Solutions</h1>
+<p>Venga a nuestros maravillosos hoteles, compruebe la disponibilidad de fechas para realizar su reserva</p>
 
-<h1>Bienvenido a Hello Worlds</h1>
-<p>En esta pagina podrás encontrar todo tipo de ejemplos para tus desarrollos en Django</p>
+<h3>Compruebe su Disponibilidad</h3>
+<form method = 'POST'>
+{% csrf_token %}
+{{form.as_p}}
+<button onclick="validaFechas()">Disponibilidad</button>
+</form>  
 
-<p>Podrás encontrar todos los ejemplos y mas información en el <a href="https://github.com/Francisco-Neff/Django-Hello-World">repositorio de este proyecto</a></p>
+<p>Podrás encontrar todos los ejemplos y mas información en el <a href="https://github.com/Francisco-Neff/HotelSolutions">repositorio de este proyecto</a></p>
+
+<script type="text/javascript">
+    var formatDate = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }
+    var registro = new Date().toLocaleDateString('es-ES',formatDate)
+    
+    function validaFechas(){
+        if(document.getElementById("id_fx_entrada").value < registro) 
+            alert('La fecha de entrada no puede ser menor a la de hoy')
+       
+        else if ( document.getElementById("id_fx_salida").value <= document.getElementById("id_fx_entrada").value ) 
+            alert('La fecha de salida no puede ser menor o igual a la de entrada')        
+    }
+</script>
 {%endblock%}

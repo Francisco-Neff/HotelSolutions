@@ -48,3 +48,4 @@ class modificarCliente(View):
             respuesta = 'No se podido modificar ningún registro vuelva a intentarlo mas tarde.'
         args=respuesta
         return self.get(request, args)
+ ## de clientes se necesita solo el read de los datos de este y el delete 

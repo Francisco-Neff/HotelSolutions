@@ -2,6 +2,10 @@ from unicodedata import decimal
 from django.db import models
 from Clientes import models as Clientes
 from Habitaciones import models as Habitaciones
+import random
+import string
+
+
 
 # Create your models here.
 class Precio(models.Model):
@@ -9,6 +13,7 @@ class Precio(models.Model):
     cuantia = models.SmallIntegerField(null=False)
     class Meta:
         verbose_name='Precio'
+    
 
 class Reserva(models.Model):
     localizador = models.CharField(max_length=25,primary_key=True)
@@ -17,4 +22,20 @@ class Reserva(models.Model):
     fx_entrada = models.DateField(null=False)
     fx_salida = models.DateField(null=False)
     cuantia_total = models.DecimalField(max_digits=15,decimal_places=2,null=False)
+    class Meta:
+        verbose_name='Reserva'
+        verbose_name_plural='Reservas'    
+
+    #Para definir el localizador de la reserva utilizaremos:
+    #Primera posición fija con una 'R'. 
+    #Segunda posición fija con el tipo de habitación contratada.
+    #Posiciones de la 3 a la 10 con un random alfa numérico.
+    def defineLocalizador(tipo_habitacion):
+        localizador = 'R' + tipo_habitacion
+        localizador = ''.join(random.sample(string.ascii_letters + string.digits, 7))
+        print(localizador)
+
         
+
+       
+

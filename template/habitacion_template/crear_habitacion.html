@@ -9,6 +9,9 @@
 <p>{{respuesta}}</p>
 
 {% else %}
+    {% if param_error %} 
+    <p>{{param_error}}</p>
+    {%endif%}
 <form method="POST">
     {% csrf_token %}
     {{form.as_p}}

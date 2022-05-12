@@ -32,8 +32,9 @@ class crearHabitación(View):
                 respuesta = 'Se ha creado una nueva habitación con la siguiente clave :' + alta
             context={'respuesta': respuesta}
         else:
+            respuesta = 'No se puede crear una habitación con estas características'
             form=crearHabitacionForm()
-            context={'form':form}
+            context={'form':form,'param_error':respuesta}
         return render(request, self.template_name ,context)
 
 # Vista para mostrar todos los datos de las habitaciones actuales

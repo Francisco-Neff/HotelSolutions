@@ -23,7 +23,7 @@ from Clientes import views as cliente
 
 urlpatterns = [
 
-    path('', habitacion.homepage , name='inicio'),
+    #path('', habitacion.homepage , name='inicio'),
     #URLs-Habitaciones
     
     path('mostrarhabitaciones/', habitacion.listarHabitaciones , name='listarHabitaciones'),
@@ -36,7 +36,7 @@ urlpatterns = [
 
 
     #URLs-Reservas
-    path('disponibilidad',reserva.comprobarDisponibilidad.as_view(),name='disponibilidad'),
+    path('',reserva.comprobarDisponibilidad.as_view(),name='inicio'),
 
 
     #admin 
