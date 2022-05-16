@@ -32,3 +32,18 @@ class Cliente(models.Model):
         upt.email = email
         upt.save()
         
+    def comprobarCliente(nombre,apellido,email):
+    #Si el cliente enviado no existe se crea uno nuevo, para esto seria bueno añadir un nuevo campo de temporal en BBDD para eliminar estos registros
+    #pasado el tiempo de la estancia
+        id_cliente = Cliente.objects.filter(email = email)
+        if not id_cliente:
+            #Si no existe se crea un nuevo cliente.
+            id_cliente , cliente = Cliente.definePkCliente(nombre,apellido,email)
+            if id_cliente != 1 :
+                cliente.save()
+        else:
+            #Si existe se obtiene la clave cliente.
+            id_cliente=getattr(id_cliente[0],'id_cliente')
+        return id_cliente
+
+        

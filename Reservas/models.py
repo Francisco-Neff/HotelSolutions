@@ -13,6 +13,10 @@ class Precio(models.Model):
     cuantia = models.DecimalField(max_digits=15,decimal_places=2,null=False)
     class Meta:
         verbose_name='Precio'
+    def calcularPrecio(dias,id_habitacion):
+        habitacion =  Habitaciones.Habitacion.objects.get(id_habitacion=id_habitacion)
+        precio = Precio.objects.get(tipo_habitación=getattr(habitacion,'tipo_habitación'))
+        return (float(getattr(precio,'cuantia'))* dias)
     
 
 class Reserva(models.Model):
@@ -33,7 +37,7 @@ class Reserva(models.Model):
     def defineLocalizador(tipo_habitacion):
         localizador = 'R' + tipo_habitacion
         localizador = ''.join(random.sample(string.ascii_letters + string.digits, 7))
-        print(localizador)
+        return localizador
 
         
 

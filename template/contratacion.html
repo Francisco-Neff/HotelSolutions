@@ -4,6 +4,9 @@
 {%block head_js%}
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script type="text/javascript" src="{% static 'js/csrf_cookie.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/validadores.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/form.js' %}"></script>
+
 {%endblock%}
 {%block content%} 
 <h3>Bienvenido</h3>
@@ -18,8 +21,9 @@
     <form  id="contacform"  method="POST" action="{% url 'confirmar_reserva' %}">
         {% csrf_token %}
         {{form.as_p}}        
-        <button onclick=reservaHabitacion() >Reservar</button> 
+        
 </form> 
+<button onclick=enviarFormulario() >Reservar</button> 
 
 
 </div>
@@ -30,9 +34,8 @@
 
 <p>{{habitacion}}</p>
 
+
 <script type="text/javascript">
-   // const csrfToken = getCookie('csrftoken');
-    //console.log(csrfToken)
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     console.log(csrftoken)
 
@@ -59,58 +62,14 @@
     function habitacionSeleccionada(element) {
         document.getElementById("disponibilidad").hidden = true;
         document.getElementById("formcontact").hidden = false;
-        id_habtitacion = element.id
+        id_habitacion = element.id
         
-    };
-    /////// FORM 
-
-
+    };          
     
-    function reservaHabitacion(){
-        var reserva = {
-            id_habitacion: id_habtitacion,
-            fx_entrada: $('#entrada').text(),
-            fx_salida: $('#salida').text(),
-            nombre: $('#id_nombre').val(),
-            apellido: $('#id_apellido').val(),
-            email: $('#id_email').val()
-    }
-        
-        console.log(reserva.nombre.length)
-        console.log(reserva)
-        var frm = $('#contacform');
-        
-        if (reserva.apellido.length != 0 && reserva.nombre.length != 0 && reserva.email  != 0){ 
-            function IsEmail(email) {
-                var regex = '/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/';
-                if(!regex.test(reserva.email)) {
-                    alert('true email')
-                    return false;
-                }else{
-                    return true;
-                }
-            }
-            $.ajax({
-            type: frm.attr('method'),
-            url: frm.attr('action'),
-            headers: {
-                    "X-CSRFToken": getCookie('csrftoken'),
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-            data: reserva,
-            success: function(){
-                alert('success');
-                },
-                error: function(){
-                    alert('failure');
-                }
-             });}
-        else {
-            alert('Debes rellenar todos los campos.')}
-       
-    }
-      
-
+    function enviarFormulario(){
+        console.log(id_habitacion)
+        reservaHabitacion(id_habitacion)
+    };
 </script>
 
     {%endblock%}
