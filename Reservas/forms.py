@@ -17,5 +17,6 @@ class DisponibilidadForm(forms.Form):
         # 3 dobles
         # 2 triples
         # Otra (Definida por el usuario)
-    
+
+
    

@@ -25,6 +25,10 @@
 <button onclick="validaFechas()">Disponibilidad</button>
 </form>  
 
+{% if error %}
+<span class="error">{{error}}</span>
+{% endif %}
+
 <p>Podrás encontrar todos los ejemplos y mas información en el <a href="https://github.com/Francisco-Neff/HotelSolutions">repositorio de este proyecto</a></p>
 
 <script type="text/javascript">

@@ -10,7 +10,7 @@ import string
 # Create your models here.
 class Precio(models.Model):
     tipo_habitación = models.CharField(max_length=1, choices=Habitaciones.Habitacion.TipoHabitacion_Posibilidades.choices, null=False)
-    cuantia = models.SmallIntegerField(null=False)
+    cuantia = models.DecimalField(max_digits=15,decimal_places=2,null=False)
     class Meta:
         verbose_name='Precio'
     

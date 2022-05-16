@@ -37,6 +37,8 @@ urlpatterns = [
 
     #URLs-Reservas
     path('',reserva.comprobarDisponibilidad.as_view(),name='inicio'),
+    path('confirmar_reserva',reserva.confirmarReserva,name='confirmar_reserva'),
+    #path('contratacion/',reserva.ContratarHabitacion.as_view(),name='contratacion'),
 
 
     #admin 

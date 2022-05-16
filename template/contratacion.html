@@ -1,0 +1,116 @@
+{%extends "plantilla_base.html"%}
+{% load static %}
+{%block title%} Habitacion {%endblock%}
+{%block head_js%}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="{% static 'js/csrf_cookie.js' %}"></script>
+{%endblock%}
+{%block content%} 
+<h3>Bienvenido</h3>
+
+<div id = "error_div"> </div>
+{% if habitaciones %}
+<div id = "disponibilidad">
+    <p> Habitaciones disponibles para las fechas desde: <span id="entrada">{{fx_entrada}}</span> hasta: <span id="salida">{{fx_salida}}</span> </p>
+<table id="tabla"></table>
+</div>
+<div id = "formcontact"   >
+    <form  id="contacform"  method="POST" action="{% url 'confirmar_reserva' %}">
+        {% csrf_token %}
+        {{form.as_p}}        
+        <button onclick=reservaHabitacion() >Reservar</button> 
+</form> 
+
+
+</div>
+
+{% else %}
+<h1>No se encontrado ninguna habitación disponible</h1>
+{% endif %}
+
+<p>{{habitacion}}</p>
+
+<script type="text/javascript">
+   // const csrfToken = getCookie('csrftoken');
+    //console.log(csrfToken)
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    console.log(csrftoken)
+
+    document.getElementById("formcontact").hidden = true
+    var id_habitacion = ''
+
+    var habitaciones =  '{{habitaciones|safe}}' 
+    var data = JSON.parse(habitaciones)
+    
+    $("#tabla").append('<thead> <tr> <th> Habitación </th>'+
+        '<th> Huespedes </th>'+
+        '<th> Precio </th>'+
+        '<th> Seleccionar </th> </tr> </thead>')
+    $("#tabla").append('<tbody>')
+
+    for (i in data)
+        $("#tabla").append('<tr> <td align="center"  id="'+data[i].habitacion+'">' +  data[i].habitacion + '</td>'+
+            '<td align="center">' +  data[i].huespedes + '</td>'+
+            '<td align="center">' +  data[i].precio + '</td>' +
+            '<td> <button class="boton" onclick="habitacionSeleccionada('+data[i].habitacion+')">Seleccionar</button> </td> </tr>')
+
+    $("#tabla").append('</tbody>')
+
+    function habitacionSeleccionada(element) {
+        document.getElementById("disponibilidad").hidden = true;
+        document.getElementById("formcontact").hidden = false;
+        id_habtitacion = element.id
+        
+    };
+    /////// FORM 
+
+
+    
+    function reservaHabitacion(){
+        var reserva = {
+            id_habitacion: id_habtitacion,
+            fx_entrada: $('#entrada').text(),
+            fx_salida: $('#salida').text(),
+            nombre: $('#id_nombre').val(),
+            apellido: $('#id_apellido').val(),
+            email: $('#id_email').val()
+    }
+        
+        console.log(reserva.nombre.length)
+        console.log(reserva)
+        var frm = $('#contacform');
+        
+        if (reserva.apellido.length != 0 && reserva.nombre.length != 0 && reserva.email  != 0){ 
+            function IsEmail(email) {
+                var regex = '/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/';
+                if(!regex.test(reserva.email)) {
+                    alert('true email')
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+            $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            headers: {
+                    "X-CSRFToken": getCookie('csrftoken'),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+            data: reserva,
+            success: function(){
+                alert('success');
+                },
+                error: function(){
+                    alert('failure');
+                }
+             });}
+        else {
+            alert('Debes rellenar todos los campos.')}
+       
+    }
+      
+
+</script>
+
+    {%endblock%}
