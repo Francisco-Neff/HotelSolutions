@@ -6,6 +6,7 @@ header{
     padding-top: 0.5%;
     padding-bottom: 0.5%;
     padding-left: 3%;
+    
 }
 body {
     margin: 0;
@@ -17,5 +18,15 @@ body {
 }
 
 #content {
+    padding-top: 0,5%;
     padding-left: 4%;
+    padding-right: 3%;
 }
+
+img.img_habitacion {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 150px;
+  }
+

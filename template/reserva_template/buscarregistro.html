@@ -1,0 +1,35 @@
+{%extends "plantilla_base.html"%}
+
+{%block title%} Buscar Reserva {%endblock%}
+
+{%block content%} 
+<form method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Enviar datos">
+</form>
+{% if respuesta %}
+<table>
+    <tbody>
+    <thead>
+    <tr>
+        <th> Clave </th>
+        <th> Tipo </th>
+        <th> Nº Habitación </th>
+    </tr>
+    </thead>
+    {% for registro in respuesta %}
+    <tr>
+        <td>{{registro.id_habitacion.id_habitacion}}</td>
+        <td>{{registro.tipo_habitación}}</td>
+        <td>{{registro.n_habitacion}}</td>
+    </tr>
+    
+    </tr>
+    {% endfor %}
+    
+    </tbody>
+    {% else %}
+    <h1>No se tienen registros</h1>
+{% endif %}
+{%endblock%}

@@ -1,30 +1,32 @@
 {%extends "plantilla_base.html"%}
+{% load static %}
 
-{%block title%} Inicio {%endblock%}
+{%block title%} Habitaciones {%endblock%}
 {%block content%} 
-
-<table>
-    <tbody>
     {% if registros %}
+    <table>
+    <thead>
     <tr>
         <th> Clave </th>
         <th> Tipo </th>
         <th> Nº Habitación </th>
+        <th> Imagen </th>
     </tr>
+    </thead>
+    <tbody>
     {% for registro in registros %}
     <tr>
         <td>{{registro.id_habitacion}}</td>
-        <td>{{registro.tipo_habitación}}</td>
+        <td>{{registro.tipo_habitacion}}</td>
         <td>{{registro.n_habitacion}}</td>
-    </tr>
-    
+        <td><img src={{registro.imagen.url}} class="img_habitacion"></td>
     </tr>
     {% endfor %}
-    {% else %}
-    <h1>No se tienen registros</h1>
-    {% endif %}
     </tbody>
 </table>
+{% else %}
+    <h1>No se tienen registros</h1>
+{% endif %}
 
 {%endblock%}
  

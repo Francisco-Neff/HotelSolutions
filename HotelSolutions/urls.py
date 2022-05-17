@@ -23,9 +23,8 @@ from Clientes import views as cliente
 
 urlpatterns = [
 
-    #path('', habitacion.homepage , name='inicio'),
+  
     #URLs-Habitaciones
-    
     path('mostrarhabitaciones/', habitacion.listarHabitaciones , name='listarHabitaciones'),
     path('crearHabitacion', habitacion.crearHabitación.as_view() ,name='crearHabitacion'),
     path('udHabitacion/<str:servicio>', habitacion.udHabitación.as_view() ,name='udHabitacion'),
@@ -36,9 +35,10 @@ urlpatterns = [
 
 
     #URLs-Reservas
-    path('',reserva.comprobarDisponibilidad.as_view(),name='inicio'),
-    path('confirmar_reserva',reserva.confirmarReserva,name='confirmar_reserva'),
-    #path('contratacion/',reserva.ContratarHabitacion.as_view(),name='contratacion'),
+    path('',reserva.MostrarReservas.as_view(),name='inicio'),
+    path('confirmar_reserva',reserva.ConfirmarReserva.as_view(),name='confirmar_reserva'),
+    path('buscar_reserva/',reserva.MostrarRegistrosClave.as_view() ,name='buscar_reserva'),
+    path('contratacion/',reserva.comprobarDisponibilidad.as_view(),name='contratacion'),
 
 
     #admin 

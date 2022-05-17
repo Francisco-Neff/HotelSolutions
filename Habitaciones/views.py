@@ -1,4 +1,5 @@
 from calendar import c
+from distutils.command.clean import clean
 from random import choices
 from django.shortcuts import render
 from django.views import View
@@ -6,13 +7,7 @@ from .models import Habitacion
 from .forms import crearHabitacionForm
 
 # Create your views here.
-
-def homepage(request):
-    return render(request,'index.html')
-
-
 # Se creán las vistas de habitaciones con el concepto CRUD
-
 
 # Clase para crear una nueva habitación a través de un formulario.
 class crearHabitación(View):
@@ -22,13 +17,18 @@ class crearHabitación(View):
         context={'form':form}
         return render(request,self.template_name,context)
     def post(self, request,*args, **kwargs):
-        form=crearHabitacionForm(request.POST)
+        form=crearHabitacionForm(request.POST,request.FILES)
         if form.is_valid(): 
-            alta , habitacion =  Habitacion.DefinePkHab.definePkHab(request.POST.get('tipo_habitación'),request.POST.get('n_habitacion'))
+            alta = Habitacion.DefinePkHab.definePkHab(request.POST.get('tipo_habitacion'),request.POST.get('n_habitacion'))
             if alta == 1 :
                 respuesta = 'No se puede crear una habitación con estas características'
             else:
-                habitacion.save()
+                Habitacion.objects.create(
+                    id_habitacion=alta,
+                    tipo_habitacion=form.cleaned_data.get('tipo_habitacion'),
+                    n_habitacion=form.cleaned_data.get('n_habitacion'),
+                    imagen=form.cleaned_data.get('imagen')
+                )
                 respuesta = 'Se ha creado una nueva habitación con la siguiente clave :' + alta
             context={'respuesta': respuesta}
         else:
@@ -62,18 +62,24 @@ class udHabitación(View):
         if (request.POST.get('ud') in Habitacion.objects.values_list('id_habitacion', flat=True)) and (request.POST.get('ud') != None): 
             if servicio == 'borrar': 
                 args = 'La habitación ha sido borrada con éxito.'
-                #Habitacion.objects.filter(id_habitacion=request.POST.get('ud')).delete()
+                Habitacion.objects.filter(id_habitacion=request.POST.get('ud')).delete()
                 return self.get(request, servicio, args)
             elif servicio == 'modificar':
                 args=request.POST.get('ud') #Se envia el identificador habitación
                 return self.modificar(request,servicio,args)
-            elif servicio == 'update':
-                form=crearHabitacionForm(request.POST)
+            elif servicio == 'update':     
+                form=crearHabitacionForm(request.POST,request.FILES)
                 if form.is_valid():
-                    upt = Habitacion.UpdateHabitacion.updateHabitacion(request.POST.get('ud'),request.POST.get('tipo_habitación'),request.POST.get('n_habitacion'))
+                    upt = Habitacion.UpdateHabitacion.updateHabitacion(request.POST.get('ud'),request.POST.get('tipo_habitacion'),request.POST.get('n_habitacion'))
                     if upt == 1:
                         args='Se ha producido un error durante la actualización y esta no se ha realizado'
                     else:
+                        Habitacion.objects.create(
+                        id_habitacion=upt,
+                        tipo_habitacion=form.cleaned_data.get('tipo_habitacion'),
+                        n_habitacion=form.cleaned_data.get('n_habitacion'),
+                        imagen=form.cleaned_data.get('imagen')
+                        )
                         args='Se ha modificación actual creando la nueva clave para esta: '+ upt
                 else:
                     args='Se ha producido un error durante la actualización y esta no se ha realizado'

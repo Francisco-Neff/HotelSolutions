@@ -6,7 +6,7 @@
 <p>{{respuesta}}</p>
 {%endif%}
 
-<form method="POST" action="{% url 'udHabitacion' servicio %}">
+<form method="POST" action="{% url 'udHabitacion' servicio %}"  enctype="multipart/form-data">
     {% csrf_token %}
     {% if form %} 
     <p>{{ud_id}}</p>

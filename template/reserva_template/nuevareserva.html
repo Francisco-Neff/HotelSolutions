@@ -1,0 +1,30 @@
+{%extends "plantilla_base.html"%}
+{% load static %}
+
+{%block title%} Disponibilidad {%endblock%}
+{%block head_js%}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+  <script type="text/javascript" src="{% static 'js/datapicker_es.js' %}"></script> 
+  <script>
+    $( function() {
+      $( "#id_fx_entrada" ).datepicker();
+      $( "#id_fx_salida" ).datepicker();
+    } );
+    </script>
+  {%endblock%}
+{%block content%} 
+<h1>Realice su reserva con nosotros</h1>
+<p>Venga a nuestros maravillosos hoteles, compruebe la disponibilidad de fechas para realizar su reserva</p>
+<h3>Compruebe su Disponibilidad</h3>
+<form method = 'POST'>
+{% csrf_token %}
+{{form.as_p}}
+<button onclick="validaFechas()">Disponibilidad</button>
+</form>  
+
+{% if error %}
+<span class="error">{{error}}</span>
+{% endif %}
+{%endblock%}

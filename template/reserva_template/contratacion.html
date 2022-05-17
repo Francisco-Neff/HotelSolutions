@@ -6,35 +6,26 @@
 <script type="text/javascript" src="{% static 'js/csrf_cookie.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/validadores.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/form.js' %}"></script>
-
 {%endblock%}
-{%block content%} 
-<h3>Bienvenido</h3>
 
-<div id = "error_div"> </div>
+{%block content%} 
 {% if habitaciones %}
 <div id = "disponibilidad">
-    <p> Habitaciones disponibles para las fechas desde: <span id="entrada">{{fx_entrada}}</span> hasta: <span id="salida">{{fx_salida}}</span> </p>
+    <p> Listado de habitaciones disponibles para <span id="huespedes">{{huespedes}}</span> persona/as en las fechas desde: <span id="entrada">{{fx_entrada}}</span> hasta: <span id="salida">{{fx_salida}}</span> </p>
 <table id="tabla"></table>
 </div>
-<div id = "formcontact"   >
+<div id = "formcontact" >
     <form  id="contacform"  method="POST" action="{% url 'confirmar_reserva' %}">
         {% csrf_token %}
         {{form.as_p}}        
-        
 </form> 
-<button onclick=enviarFormulario() >Reservar</button> 
-
-
+<button onclick=enviarReserva()>Reservar</button> 
 </div>
-
 {% else %}
 <h1>No se encontrado ninguna habitación disponible</h1>
 {% endif %}
-
-<p>{{habitacion}}</p>
-
-
+{%endblock%}
+{%block body_js%} 
 <script type="text/javascript">
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     console.log(csrftoken)
@@ -62,14 +53,14 @@
     function habitacionSeleccionada(element) {
         document.getElementById("disponibilidad").hidden = true;
         document.getElementById("formcontact").hidden = false;
-        id_habitacion = element.id
-        
-    };          
+        id_habitacion = element.id  
+    };  
     
-    function enviarFormulario(){
-        console.log(id_habitacion)
+    function enviarReserva(){
         reservaHabitacion(id_habitacion)
-    };
+    }
+    
 </script>
 
-    {%endblock%}
+{%endblock%}
+    

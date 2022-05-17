@@ -58,10 +58,11 @@ ROOT_URLCONF = 'HotelSolutions.urls'
 TEMPLATE_DIR=os.path.join(BASE_DIR , 'template')
 TEMPLATE_DIR_HABITACION=os.path.join(BASE_DIR , 'template\habitacion_template')
 TEMPLATE_DIR_CLIENTE=os.path.join(BASE_DIR , 'template\cliente_template')
+TEMPLATE_DIR_RESERVA=os.path.join(BASE_DIR , 'template\\reserva_template')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,TEMPLATE_DIR_HABITACION,TEMPLATE_DIR_CLIENTE],
+        'DIRS': [TEMPLATE_DIR,TEMPLATE_DIR_HABITACION,TEMPLATE_DIR_CLIENTE,TEMPLATE_DIR_RESERVA],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
