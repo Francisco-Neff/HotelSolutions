@@ -11,10 +11,10 @@
 - [Clientes](#clientes)
 
 ### Habitaciones
-Lleva la BBDD de las habitaciones.
+Lleva la BBDD de las habitaciones y un método CRUD de habitaciones.
 
 ### Reservas
-Lleva la BBDD de las Reservas, así como las soluciones de disponibilidad y contratación
+Lleva la BBDD de las Reservas, además contiene un método para mostrar las reservas por diferentes claves y mostrar todas las reservas activas desde la fecha actual, así como las soluciones de disponibilidad, contratación y calculo de precio de la estancia.
 
 ### Clientes
-Lleva la BBDD de Clientes.
+Lleva la BBDD de Clientes y los métodos crear y modificar cliente.
