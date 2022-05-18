@@ -10,7 +10,7 @@
 
 {%block content%} 
 {% if habitaciones %}
-<div id = "disponibilidad">
+<div id = "disponibilidad" class="table table-striped">
     <p> Listado de habitaciones disponibles para <span id="huespedes">{{huespedes}}</span> persona/as en las fechas desde: <span id="entrada">{{fx_entrada}}</span> hasta: <span id="salida">{{fx_salida}}</span> </p>
 <table id="tabla"></table>
 </div>
@@ -19,7 +19,7 @@
         {% csrf_token %}
         {{form.as_p}}        
 </form> 
-<button onclick=enviarReserva()>Reservar</button> 
+<button onclick=enviarReserva() class="btn btn-success btn-lg">Reservar</button> 
 </div>
 {% else %}
 <h1>No se encontrado ninguna habitación disponible</h1>
@@ -36,17 +36,19 @@
     var habitaciones =  '{{habitaciones|safe}}' 
     var data = JSON.parse(habitaciones)
     
-    $("#tabla").append('<thead> <tr> <th> Habitación </th>'+
-        '<th> Huespedes </th>'+
-        '<th> Precio </th>'+
-        '<th> Seleccionar </th> </tr> </thead>')
+    $("#tabla").append('<thead> <tr> <th scope="col"> Habitación </th>'+
+        '<th scope="col"> Imagen </th>'+
+        '<th scope="col"> Huespedes </th>'+
+        '<th scope="col"> Precio </th>'+
+        '<th scope="col"> Seleccionar </th> </tr> </thead>')
     $("#tabla").append('<tbody>')
 
     for (i in data)
-        $("#tabla").append('<tr> <td align="center"  id="'+data[i].habitacion+'">' +  data[i].habitacion + '</td>'+
+        $("#tabla").append('<tr> <th scope="row" align="center"  id="'+data[i].habitacion+'">' +  data[i].habitacion + '</th>'+
+            '<td><img src="'+data[i].url+'" class="img_habitacion"></td>'+
             '<td align="center">' +  data[i].huespedes + '</td>'+
             '<td align="center">' +  data[i].precio + '</td>' +
-            '<td> <button class="boton" onclick="habitacionSeleccionada('+data[i].habitacion+')">Seleccionar</button> </td> </tr>')
+            '<td> <button class="btn btn-outline-dark btn-sm" onclick="habitacionSeleccionada('+data[i].habitacion+')">Seleccionar</button> </td> </tr>')
 
     $("#tabla").append('</tbody>')
 

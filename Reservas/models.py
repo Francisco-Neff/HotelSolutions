@@ -1,6 +1,5 @@
 import random
 import string
-from unicodedata import decimal
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from Clientes import models as Clientes
@@ -58,6 +57,9 @@ class Reserva(models.Model):
             registros = Reserva.objects.filter(id_cliente=clave)
         elif tipo == 2: #Clave Habitación
             registros = Reserva.objects.filter(id_habitacion=clave)
+        elif tipo == 3:
+            registros = Reserva.objects.filter(localizador=clave)
+
         for registro in registros:
             print(registro)
         return registros

@@ -4,22 +4,24 @@
 {%block title%} Habitaciones {%endblock%}
 {%block content%} 
     {% if registros %}
-    <table>
+    <table class="table table-striped">
     <thead>
     <tr>
-        <th> Clave </th>
-        <th> Tipo </th>
-        <th> Nº Habitación </th>
-        <th> Imagen </th>
+        <th scope="col"> Clave </th>
+        <th scope="col"> Imagen </th>
+        <th scope="col"> Huéspedes </th>
+        <th scope="col"> Nº Habitación </th>
+        
     </tr>
     </thead>
     <tbody>
     {% for registro in registros %}
     <tr>
-        <td>{{registro.id_habitacion}}</td>
+        <th scope="row" >{{registro.id_habitacion}}</th>
+        <td><img src={{registro.imagen.url}} class="img_habitacion"></td>
         <td>{{registro.tipo_habitacion}}</td>
         <td>{{registro.n_habitacion}}</td>
-        <td><img src={{registro.imagen.url}} class="img_habitacion"></td>
+        
     </tr>
     {% endfor %}
     </tbody>

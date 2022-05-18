@@ -21,7 +21,7 @@
 <form method = 'POST'>
 {% csrf_token %}
 {{form.as_p}}
-<button onclick="validaFechas()">Disponibilidad</button>
+<button class="btn btn-success btn-lg" >Disponibilidad</button>
 </form>  
 
 {% if error %}

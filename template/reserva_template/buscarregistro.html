@@ -1,35 +1,48 @@
 {%extends "plantilla_base.html"%}
-
+{% load static %}
 {%block title%} Buscar Reserva {%endblock%}
 
 {%block content%} 
+{% if form %}
 <form method="POST">
     {% csrf_token %}
     {{form.as_p}}
-    <input type="submit" value="Enviar datos">
+    <button class="btn btn-success btn-lg" type="submit"> Buscar </button>
 </form>
-{% if respuesta %}
-<table>
-    <tbody>
+{% endif %}
+{% if registros %}
+<table class="table table-striped"> 
     <thead>
     <tr>
-        <th> Clave </th>
-        <th> Tipo </th>
-        <th> Nº Habitación </th>
+        <th scope="col"> Localizador </th>
+        <th scope="col"> Id Cliente </th>
+        <th scope="col"> Habitación </th>
+        <th scope="col"> Imagen </th>
+        <th scope="col"> Huéspedes </th>
+        <th scope="col"> Nº Habitación </th>
+        <th scope="col"> Fecha entrada </th>
+        <th scope="col"> Fecha salida </th>
+        <th scope="col"> Precio Estancia </th>
+
     </tr>
     </thead>
-    {% for registro in respuesta %}
+    <tbody>
+    {% for registro in registros %}
     <tr>
+        <th scope="row"> {{registro.localizador}} </th>
+        <td>{{registro.id_cliente.id_cliente}}</td>
         <td>{{registro.id_habitacion.id_habitacion}}</td>
-        <td>{{registro.tipo_habitación}}</td>
-        <td>{{registro.n_habitacion}}</td>
-    </tr>
-    
+        <td><img src={{registro.id_habitacion.imagen.url}} class="img_habitacion"></td>
+        <td>{{registro.id_habitacion.tipo_habitacion}}</td>
+        <td>{{registro.id_habitacion.n_habitacion}}</td>
+        <td>{{registro.fx_entrada}}</td>
+        <td>{{registro.fx_salida}}</td>
+        <td>{{registro.cuantia_total}} {{registro.moneda}}</td>
     </tr>
     {% endfor %}
-    
     </tbody>
-    {% else %}
-    <h1>No se tienen registros</h1>
+</table>
+{% else %}
+    <h1>{{repuesta}}</h1>
 {% endif %}
 {%endblock%}

@@ -5,7 +5,7 @@
 
 {%block content%} 
 <h1>Bienvenido a Hotel Solutions</h1>
-<p>Venga a nuestros maravillosos hoteles, compruebe la disponibilidad de fechas para realizar su reserva</p>
+<p>Venga a nuestros maravillosos hoteles y pase su estancia en las mejores habitaciones</p>
 {% if reserva %}
 <p>{{reserva}}</p>
 {% endif %}
@@ -19,6 +19,7 @@
         <th scope="col"> Id Cliente </th>
         <th scope="col"> Nombre </th>
         <th scope="col"> Apellido </th>
+        <th scope="col"> Teléfono </th>
         <th scope="col"> Email </th>
         <th scope="col"> Fecha entrada </th>
         <th scope="col"> Fecha salida </th>
@@ -34,6 +35,7 @@
         <td>{{registro.id_cliente.id_cliente}}</td>
         <td>{{registro.id_cliente.nombre}}</td>
         <td>{{registro.id_cliente.apellido}}</td>
+        <td>{{registro.id_cliente.telefono}}</td>
         <td>{{registro.id_cliente.email}}</td>
         <td>{{registro.fx_entrada}}</td>
         <td>{{registro.fx_salida}}</td>

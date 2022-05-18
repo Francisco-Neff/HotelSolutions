@@ -7,7 +7,11 @@ from .models import Habitacion
 from .forms import crearHabitacionForm
 
 # Create your views here.
-# Se creán las vistas de habitaciones con el concepto CRUD
+
+##Todas estas vistas estarían pensadas para utilizarse con un proceso de administrador que pudiera realizar los pasos de alta,modificación, y borrado a este 
+## y se dejaría el método de mostrar habitaciones libre para cualquier usuario.
+
+# Se crean las vistas de habitaciones con el concepto CRUD
 
 # Clase para crear una nueva habitación a través de un formulario.
 class crearHabitación(View):
@@ -43,7 +47,8 @@ def listarHabitaciones(request):
     context={'registros':list_habitaciones}
     return render(request,'listar_habitaciones.html',context)
 
-# Clase para eliminar una habitación a través de la selección de su campo identificador.
+# Clase para eliminar o modificar una habitación a través de la selección de su campo identificador y el parámetro
+# servicio enviado mediante la URL.
 class udHabitación(View):
     template_name='ud_habitacion.html'
 
@@ -89,7 +94,7 @@ class udHabitación(View):
             args='Debes seleccionar alguna opción para continuar'
             return self.get(request,servicio,args)  
     
-
+    #Si se va a modificar una habitación se genera esta vista con el formulario para modificarla.
     def modificar(self, request,servicio,*args, **kwargs):
         if servicio != 'modificar':
             servicio='modificar'

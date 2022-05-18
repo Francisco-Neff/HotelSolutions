@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from cgitb import handler
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
@@ -20,6 +21,7 @@ from django.conf import settings
 from Habitaciones import views as habitacion
 from Reservas import views as reserva
 from Clientes import views as cliente
+
 
 urlpatterns = [
 
@@ -39,9 +41,12 @@ urlpatterns = [
     path('confirmar_reserva',reserva.ConfirmarReserva.as_view(),name='confirmar_reserva'),
     path('buscar_reserva/',reserva.MostrarRegistrosClave.as_view() ,name='buscar_reserva'),
     path('contratacion/',reserva.comprobarDisponibilidad.as_view(),name='contratacion'),
+    
 
 
     #admin 
     path('admin/', admin.site.urls),
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler404 = 'Reservas.views.view_404'

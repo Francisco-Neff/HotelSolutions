@@ -7,7 +7,8 @@ function reservaHabitacion(id_habitacion){
         huesped: $('#huespedes').text(),
         nombre: $('#id_nombre').val(),
         apellido: $('#id_apellido').val(),
-        email: $('#id_email').val()
+        email: $('#id_email').val(),
+        tlf:  $('#id_telefono').val()
     }
         var frm = $('#contacform');
         if (reserva.apellido.length != 0 && reserva.nombre.length != 0 && reserva.email  != 0){ 
@@ -25,7 +26,7 @@ function reservaHabitacion(id_habitacion){
                 $("body").html(data);
             },
             error: function () {              
-                alert("Se ha producido un error en su reserva, vuelva a intentarlo más tarde.");
+                alert("Se ha producido un error en su reserva, vuelva a intentarlo más tarde o rellene los campos del formulario correctamente.");
             }
             });}
           else { 

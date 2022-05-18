@@ -4,12 +4,12 @@ from .models import Cliente
 class crearClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields=['nombre','apellido','email']
+        fields=['nombre','apellido','email','telefono']
     
 class modificarClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields=['id_cliente','nombre','apellido','email']
+        fields=['id_cliente','nombre','apellido','email','telefono']
 
 
 

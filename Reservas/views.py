@@ -1,14 +1,17 @@
 import json
 from datetime import datetime,timedelta,date
-from django.shortcuts import  render
+from django.db.models import Q
+from django.shortcuts import  render, redirect
 from django.views import View
 from Clientes.form import crearClienteForm
 from .forms import DisponibilidadForm,BuscarClaveForm
 from .models import Habitaciones,Reserva,Precio, Clientes
 
-FECHA_MAXIMA = '2022-12-31'
+
 
 # Create your views here.
+
+#Clase con las vistas para generar el formulario que recoge la fecha entrada, fecha salida y los huéspedes que se alojan.
 class comprobarDisponibilidad(View):
     template_name='nuevareserva.html'
     form = DisponibilidadForm()
@@ -24,7 +27,7 @@ class comprobarDisponibilidad(View):
         fx_entrada=datetime.strptime(request.POST.get('fx_entrada') , "%d/%m/%Y")
         fx_salida=datetime.strptime(request.POST.get('fx_salida'), "%d/%m/%Y")
         if fx_salida > datetime(2022,12,31):
-            context={'error':'No se puedes seleccionar una fecha maxima por encima de '+FECHA_MAXIMA,'form':self.form}
+            context={'error':'No se puedes seleccionar una fecha maxima por encima de 2022-12-31','form':self.form}
             return render(request,self.template_name,context)
         elif fx_entrada < datetime.strptime(datetime.today().strftime("%d/%m/%Y"), "%d/%m/%Y"):
             context={'error':'La fecha de entrada no puede ser menor a la de hoy','form':self.form}
@@ -35,18 +38,22 @@ class comprobarDisponibilidad(View):
         
         fx_entrada=fx_entrada.strftime('%Y-%m-%d')
         fx_salida=fx_salida.strftime('%Y-%m-%d')
+
         #Discriminador, recoge todas las habitaciones ocupadas cumpliendo la condición de
-        #la entrada del nuevo huesped coincide con la entrada o próximas entradas de huespedes --fx_entrada__gte = fx_entrada-- 
-        #ademas de la entrada del nuevo huesped concurre durante el tiempo con próximos huespedes o la salida de estos --fx_entrada__lte=fx_salida--
+        #la entrada del nuevo huésped coincide con la entrada o próximas entradas de huéspedes --fx_entrada__gte = fx_entrada-- 
+        #la salida del huéspedes no coincide con la entrada de otros huéspedes --fx_entrada__lte=fx_salida--
         #Con esto obtenemos todas las habitaciones ocupadas en el rango de fechas proporcionado en la petición. 
-        disp = Reserva.objects.filter(fx_entrada__gte = fx_entrada,fx_entrada__lte=fx_salida)
+        disp = Reserva.objects.filter(Q(fx_entrada__gte = fx_entrada) | Q(fx_entrada__lte=fx_salida))
+  
         reg = []
         for hab in disp:
             if hab != None: 
                 reg.append(getattr( getattr(hab,'id_habitacion'),'id_habitacion'))
         # Esta no es la manera mas optima de obtener todos los registros ya que con consulta INNERJOIN se pueda realizar en un único acceso a BBDD
         # pero con mis conocimientos actuales es la única manera que conozco
-        habitaciones_disponibles = Habitaciones.Habitacion.objects.filter(tipo_habitacion__lte = request.POST.get('huespedes')).exclude(id_habitacion__in=reg)
+        #Discriminador para mostrar las habitaciones que puedan albergar todos los huéspedes.
+        habitaciones_disponibles = Habitaciones.Habitacion.objects.filter(tipo_habitacion__gte = request.POST.get('huespedes')).exclude(id_habitacion__in=reg)
+        #Calculo de la tabla de disponibilidad
         tabla= self.tablaDisponibilidad(habitaciones_disponibles,fx_entrada,fx_salida)
 
         if len(tabla) != 0: 
@@ -74,11 +81,12 @@ class comprobarDisponibilidad(View):
             moneda=moneda
           
         #Generamos la tabla final para presentar al cliente con todas las opciones disponibles en formato JSON:
-        #{habitacion: id_habitacion, huespedes: num_personas_max, precio: cuantia_total_estancia con moneda}
+        #{url: imagen asociada, habitacion: id_habitacion, huespedes: num_personas_max, precio: cuantia_total_estancia con moneda}
         # devolvemos esta tabla generada
         tabla_final = []
         for habitacion in habitaciones_disponibles: 
             tupla={}
+            tupla['url']='../'+str(getattr(habitacion,'imagen'))
             tupla['habitacion']=getattr(habitacion,'id_habitacion')
             tupla['huespedes']=getattr(habitacion,'tipo_habitacion')
             tupla['precio']= str(float(precios[str(getattr(habitacion,'tipo_habitacion'))]) * num_dias) + moneda
@@ -86,17 +94,16 @@ class comprobarDisponibilidad(View):
         data = json.dumps(tabla_final)      
         return data
 
-
+#Vista para realizar la reserva con los datos enviados por el cliente
+#Solo se podrá llegar a esta vista con una petición POST
 class ConfirmarReserva(View):
     template_name='index.html'
     registros = Reserva.objects.filter(fx_salida__gte = date.today().strftime('%Y-%m-%d'))
     context={}
     context['registros']=registros
-    def post(self, request,*args, **kwargs):
-        #Vista para realizar la reserva con los datos enviados por el cliente
-        #Solo se podrá llegar a esta vista con una petición POST
 
-        id_cliente = Clientes.Cliente.comprobarCliente(request.POST['nombre'],request.POST['apellido'],request.POST['email'])
+    def post(self, request,*args, **kwargs):
+        id_cliente = Clientes.Cliente.comprobarCliente(request.POST['nombre'],request.POST['apellido'],request.POST['email'],request.POST['tlf'])
         if id_cliente != 1:
             #Una vez recibido el ID del cliente se realiza la verificación de la habitación no este reservada.
             fx_salida = request.POST['fx_salida']
@@ -108,9 +115,8 @@ class ConfirmarReserva(View):
                 dias = (datetime.strptime(fx_salida,'%Y-%m-%d') - datetime.strptime(fx_entrada,'%Y-%m-%d'))/timedelta(days=1)
                 cuantia_total = Precio.calcularPrecio(dias,request.POST['id_habitacion'])
 
-                #Se realiza la reserva.
+                #Se almacena la reserva.
                 id_reserva = Reserva.defineLocalizador(request.POST['id_habitacion'])
-                print(id_reserva)
                 reserva=Reserva(
                 localizador=id_reserva,
                 id_habitacion=Habitaciones.Habitacion.objects.get(id_habitacion=request.POST['id_habitacion']),
@@ -121,7 +127,8 @@ class ConfirmarReserva(View):
                 cuantia_total=cuantia_total)
                 reserva.save()
                 
-                #Se renderiza la vista index en función de la respuesta obtenida.
+        #Se genera la vista index en función de la respuesta obtenida.
+        #Esta vista se renderiza a través de Jquery
                 self.context['reserva']='Se ha creado su reserva con el siguiente localizador: '+id_reserva
                 return render(request,self.template_name,self.context)
             else:
@@ -131,37 +138,49 @@ class ConfirmarReserva(View):
             self.context['reserva']='No se ha podido generar tu reserva vuelva a intentarlo mas tarde.'
             return render (request,self.template_name,self.context)
 
-
+#Vista para mostrar las reservas asociadas a la clave de:
+# 1 = Clave de Cliente
+# 2 = Clave de Habitación
+# 3 = Localizador de Reserva
 class MostrarRegistrosClave(View):
     template_name = 'buscarregistro.html'
+    form = BuscarClaveForm()
+    context = {}
     def get(self, request,*args, **kwargs): 
-        form = BuscarClaveForm()
-        context = {'form':form}
-        return render(request,self.template_name,context)
+        self.context = {'form':self.form}
+        return render(request,self.template_name,self.context)
     def post(self, request,*args, **kwargs): 
+        self.context['registros']=''
         form = BuscarClaveForm(request.POST)
-        print('post',request.POST)
         if form.is_valid():
             clave = str(request.POST['clave'])
             tipo = 0
             if clave.startswith('C'):
                 tipo=1
-            elif clave.startswith('DOB'):
+            elif clave.startswith('HA'):
                 tipo=2
             elif clave.startswith('RHA'):
                 tipo=3
             else:
-                respuesta = 'La clave enviada no es correcta.'
-            registro = Reserva.mostrarReservas(tipo,clave)
-        print(tipo,registro)
-        return render (request,self.template_name)
+                self.context['form'] = self.form
+                self.context['respuesta'] = 'La clave enviada no es correcta.'
+            if tipo != 0:    
+                registro = Reserva.mostrarReservas(tipo,clave)
+                self.context['registros'] = registro
+        else:
+            self.context['form'] = self.form
+            self.context['respuesta'] = 'No se ha podido verificar una respuesta, vuelva a intentarlo mas tarde.'
+        return render (request,self.template_name,self.context)
 
 
 
 class MostrarReservas(View):
+#Se genera la pagina de inicio con el registro de todas las reservas activas que tenga fecha de salida superior o igual a la fecha actual
     template_name = 'index.html'
     def get(self, request,*args, **kwargs): 
-        fx_salida=date.today().strftime('%Y-%m-%d')
-        registros = Reserva.objects.filter(fx_salida__gte = fx_salida)
+        registros = Reserva.objects.filter(fx_salida__gte = date.today().strftime('%Y-%m-%d'))
         context = {'registros':registros}
         return render(request,self.template_name,context)
+
+def view_404(request,exception=None):
+    return redirect('inicio')
