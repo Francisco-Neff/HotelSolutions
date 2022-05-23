@@ -40,11 +40,12 @@ class comprobarDisponibilidad(View):
         fx_salida=fx_salida.strftime('%Y-%m-%d')
 
         #Discriminador, recoge todas las habitaciones ocupadas cumpliendo la condición de
+        #la fecha de salida de la habitación no coincide con la nueva entrada
         #la entrada del nuevo huésped coincide con la entrada o próximas entradas de huéspedes --fx_entrada__gte = fx_entrada-- 
         #la salida del huéspedes no coincide con la entrada de otros huéspedes --fx_entrada__lte=fx_salida--
         #Con esto obtenemos todas las habitaciones ocupadas en el rango de fechas proporcionado en la petición. 
-        disp = Reserva.objects.filter(Q(fx_entrada__gte = fx_entrada) | Q(fx_entrada__lte=fx_salida))
-  
+        disp = Reserva.objects.filter(Q(fx_salida__gte=fx_entrada) | Q(fx_entrada__gte = fx_entrada) & Q(fx_entrada__lte=fx_salida))
+        print (disp)
         reg = []
         for hab in disp:
             if hab != None: 
